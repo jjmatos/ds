@@ -1,22 +1,18 @@
 FROM node:22-alpine
 
-# Instalar git
 RUN apk add --no-cache git
 
 WORKDIR /app
 
-# Clonar el repositorio completo
 RUN git clone https://github.com/jjmatos/ds.git /tmp/ds
 RUN cp -r /tmp/ds/* /app/
 
-# Instalar dependencias (npm ci ahora funcionará)
-RUN npm ci
+# Instalar ignorando scripts nativos problemáticos
+RUN npm ci --ignore-scripts || npm install --ignore-scripts
 
-# Construir los archivos estáticos
+# Construir
 RUN npm run build
 
-# Exponer puerto
-EXPOSE 3000
+EXPOSE 4173
 
-# Servir los archivos estáticos
-CMD ["node", "scripts/serve.mjs", "3000"]
+CMD ["node", "scripts/serve.mjs", "4173"]
